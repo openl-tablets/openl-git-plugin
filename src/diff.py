@@ -18,7 +18,6 @@ else:
     bundle_dir = os.path.dirname(os.path.abspath(__file__))
 
 if __name__ == "__main__":
-    print(sys.argv)
     if not 8 <= len(sys.argv) <= 9:
         print('Unexpected number of arguments')
         sys.exit(0)
