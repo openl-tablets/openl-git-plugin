@@ -7,12 +7,19 @@ GIT_ATTRIBUTES_DIFFER = ['*.' + file_ext + ' diff=openl' for file_ext in FILE_EX
 GIT_IGNORE = ['~$*.' + file_ext for file_ext in FILE_EXTENSIONS]
 
 
+def executable_name():
+    if os.name == 'nt':
+        return 'git-openl-diff.exe'
+    if os.name == 'posix':
+        return 'git-openl-diff'
+
+
 class Installer():
     def __init__(self, mode='global', path=None):
 
         # running as bundle (aka frozen)
         if is_frozen():
-            self.GIT_OPENL_DIFF = 'git-openl-diff.exe'
+            self.GIT_OPENL_DIFF = executable_name()
         else:
             executable_path = sys.executable.replace('\\', '/')
             differ_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'diff.py').replace('\\', '/')
@@ -99,7 +106,7 @@ class Installer():
 
     def get_git_attributes_path(self):
         if self.mode == 'local':
-            return os.path.join(self.path, '.git','info', 'attributes')
+            return os.path.join(self.path, '.git', 'info', 'attributes')
 
         # check if core.attributesfile is configured
         core_attributesfile = self.execute(['--get', 'core.attributesfile']).split('\n')[0]
