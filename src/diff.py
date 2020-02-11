@@ -76,9 +76,9 @@ if __name__ == "__main__":
         files = {'file1': f1, 'file2': f2}
         response = requests.post(post_url, files=files)
         webbrowser.open(response.url, new=2)
+        print('comparison page in browser was opened')
     except requests.exceptions.ConnectionError as err:
         print('Server is not available')
     finally:
         f1.close()
         f2.close()
-        print('comparison page in browser was opened')
