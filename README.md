@@ -1,2 +1,72 @@
-#pip install requests
-#pip install pyinstaller
+# Git Openl - A Git Extension for Openl
+### Supported platforms
+| Windows | macOS | linux
+| :---- | :------ | :----
+### Supported file formats
+| 'xls'| 'xlsx'
+| :--- | :----
+
+# Getting started
+### Installation
+### Windows
+You can install the Git Openl client on Windows, using the pre-compiled binary installer.
+
+This repository can also be built-from-source using Python and PyInstaller.
+
+Git Openl requires a global installation once per-machine. 
+#### After running the openl-setup.exe this can be done by
+running:
+
+```
+C:\Developer>git openl install
+```
+
+Alternatively, initialise Git Openl locally (per repository), using the --local option, inside the root folder of your repository’s local working copy:
+
+```
+C:\Developer>git openl install --local
+```
+
+#### Manual installation of exe files
+Please, take the git-openl and git-openl-diff exe files, put it together to the temporary folder.
+Then add this folder to PATH environment variable.
+Then steps are the same:
+```
+C:\Developer>git openl install
+```
+
+```
+C:\Developer>git openl install --local
+```
+## Customization
+After installing depending on mode (global,local) there is created file called git-openl.ini in the same folder as .gitconfig file
+E.g, in windows 10 with global option it will be:
+```
+C:\Users\<username>\git-openl.ini
+```
+
+If local mode was chosen:
+
+```
+../<project folder>/.git/git-openl.ini
+```
+This file contains options for the plugin
+
+| Name of property  | Value  | Description  |
+|---|---|---|
+| default_host | http://localhost:8080/  |  Basic url of the application |
+| comparison_url  | webstudio/web/public/compare/xls  |  URL for comparison the excel files |
+
+### Uninstall
+The same steps can be used for uninstalling the plugin.
+#### Global
+```
+C:\Developer>git openl uninstall
+```
+#### Locally
+```
+C:\Developer>git openl uninstall --local
+```
+
+### MacOS/Linux
+Please, take the corresponding executable files and the run install.sh

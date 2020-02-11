@@ -17,6 +17,7 @@ dist/
 .venv
 env/
 venv/
+venvTest/
 ENV/
 env.bak/
 venv.bak/

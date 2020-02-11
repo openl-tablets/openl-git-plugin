@@ -1,10 +1,15 @@
+import configparser
 import os
 import subprocess
 import sys
 
+DEFAULT_COMPARISON_URL = 'webstudio/web/public/compare/xls'
+DEFAULT_LOCALHOST = 'http://localhost:8080/'
+
 FILE_EXTENSIONS = ['xls', 'xlsx']
 GIT_ATTRIBUTES_DIFFER = ['*.' + file_ext + ' diff=openl' for file_ext in FILE_EXTENSIONS]
 GIT_IGNORE = ['~$*.' + file_ext for file_ext in FILE_EXTENSIONS]
+OPENL_GIT_SETTINGS_FILE = 'git-openl.ini'
 
 
 def executable_name():
@@ -44,17 +49,22 @@ class Installer():
         self.git_attributes_path = self.get_git_attributes_path()
         self.git_ignore_path = self.get_git_ignore_path()
 
+        self.openl_settings_path = self.get_openl_settings_path()
+
     def install(self):
-        # 1. gitconfig: set-up diff.xl.command
+        # 1. gitconfig: set-up diff.openl.command
         self.execute(['diff.openl.command', self.GIT_OPENL_DIFF])
 
-        # 2. set-up gitattributes (define custom differ and merger)
+        # 2. set-up openl-git settings file
+        self.create_openl_git_settings()
+
+        # 3. set-up gitattributes (define custom differ and merger)
         self.update_git_file(path=self.git_attributes_path, keys=GIT_ATTRIBUTES_DIFFER, operation='SET')
 
-        # 3. set-up gitignore (define differ for Excel file formats)
+        # 4. set-up gitignore (define differ for Excel file formats)
         self.update_git_file(path=self.git_ignore_path, keys=GIT_IGNORE, operation='SET')
 
-        # 4. update gitconfig (only relevent when running in `global` mode)
+        # 5. update gitconfig (only relevent when running in `global` mode)
         if self.mode == 'global':
             # set core.attributesfile
             self.execute(['core.attributesfile', self.git_attributes_path])
@@ -66,8 +76,10 @@ class Installer():
         keys = self.execute(['--list']).split('\n')
         if [key for key in keys if key.startswith('diff.openl.command')]:
             self.execute(['--remove-section', 'diff.openl'])
+        # 2. delete openl-git settings
+        self.delete_openl_git_settings()
 
-        # 2. gitattributes: remove keys
+        # 3. gitattributes: remove keys
         gitattributes_keys = self.update_git_file(path=self.git_attributes_path, keys=GIT_ATTRIBUTES_DIFFER,
                                                   operation='REMOVE')
         # when in global mode and gitattributes is empty, update gitconfig and delete gitattributes
@@ -76,7 +88,7 @@ class Installer():
                 self.execute(['--unset', 'core.attributesfile'])
             self.delete_git_file(self.git_attributes_path)
 
-        # 3. gitignore: remove keys
+        # 4. gitignore: remove keys
         gitignore_keys = self.update_git_file(path=self.git_attributes_path, keys=GIT_IGNORE, operation='REMOVE')
         # when in global mode and gitignore is empty, update gitconfig and delete gitignore
         if not gitignore_keys:
@@ -116,6 +128,14 @@ class Installer():
         # put .gitattributes into same directory as global .gitconfig
         return os.path.join(self.git_global_config_dir, '.gitattributes')
 
+    def get_openl_settings_path(self):
+        p = None
+        if self.mode == 'global':
+            p = self.git_global_config_dir
+        if self.mode == 'local':
+            p = os.path.join(self.path, '.git')
+        return os.path.join(p, OPENL_GIT_SETTINGS_FILE)
+
     def get_git_ignore_path(self):
         if self.mode == 'local':
             return os.path.join(self.path, '.gitignore')
@@ -153,17 +173,29 @@ class Installer():
         if os.path.exists(path):
             os.remove(path)
 
+    def create_openl_git_settings(self):
+        if os.path.exists(self.openl_settings_path):
+            return
+        config = configparser.ConfigParser()
+        config['DEFAULT'] = {
+            'default_host': DEFAULT_LOCALHOST,
+            'comparison_url': DEFAULT_COMPARISON_URL
+        }
+        with open(self.openl_settings_path, 'w') as f:
+            config.write(f)
+
+    def delete_openl_git_settings(self):
+        if os.path.exists(self.openl_settings_path):
+            os.remove(self.openl_settings_path)
+
 
 class CommandParser:
 
     def __init__(self, args):
         self.args = args
 
-    def test_me(self):
-        print('hello')
-
     def help(self, *args):
-        print('help')
+        print('Openl git extension. Possible options: install, uninstall, both can be used with --local flag')
 
     def install(self, *args):
         if not args or args[0] == '--global':
