@@ -1,2 +1,4 @@
 requests
 pyinstaller
+colorama
+termcolor

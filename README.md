@@ -34,21 +34,21 @@ Then steps are the same:
 ```
 C:\Developer>git openl install
 ```
-
+AND/OR
 ```
 C:\Developer>git openl install --local
 ```
 ## Customization
-After installing depending on mode (global,local) there is created file called git-openl.ini in the same folder as .gitconfig file
+After installing depending on mode (global,local) there is created file called git-openl.config in the same folder as .gitconfig file
 E.g, in windows 10 with global option it will be:
 ```
-C:\Users\<username>\git-openl.ini
+C:\Users\<username>\git-openl.config
 ```
 
 If local mode was chosen:
 
 ```
-../<project folder>/.git/git-openl.ini
+../<project folder>/.git/git-openl.config
 ```
 This file contains options for the plugin
 
@@ -56,6 +56,8 @@ This file contains options for the plugin
 |---|---|---|
 | default_host | http://localhost:8080/  |  Basic url of the application |
 | comparison_url  | webstudio/web/public/compare/xls  |  URL for comparison the excel files |
+
+Local settings are preferable then global
 
 ### Uninstall
 The same steps can be used for uninstalling the plugin.
@@ -69,4 +71,5 @@ C:\Developer>git openl uninstall --local
 ```
 
 ### MacOS/Linux
-Please, take the corresponding executable files and the run install.sh
+Please, take the corresponding executable files and install.sh script as example,
+change the paths in script for yours and then run it.
