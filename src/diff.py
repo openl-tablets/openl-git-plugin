@@ -66,8 +66,9 @@ if __name__ == "__main__":
     config = configparser.ConfigParser()
     config_dir = get_config_dir(os.getcwd())
     config.read(config_dir)
-    base_url = config['DEFAULT']['default_host']
-    post_url = base_url + config['DEFAULT']['comparison_url']
+    post_url_from_installer = url_from_registry = os.getenv('WebstudioPath')
+    post_url_from_config = config['DEFAULT']['comparison_url']
+    post_url = post_url_from_config if post_url_from_config != '' else post_url_from_installer
 
     path_workbook_a = os.path.abspath(workbook_a) if workbook_a != 'nul' and workbook_a != '/dev/null' else None
     path_workbook_b = os.path.abspath(workbook_b) if workbook_b != 'nul' and workbook_b != '/dev/null' else None

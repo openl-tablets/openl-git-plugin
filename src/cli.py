@@ -6,8 +6,8 @@ import sys
 import colorama
 from termcolor import colored
 
-DEFAULT_COMPARISON_URL = 'webstudio/web/public/compare/xls'
-DEFAULT_LOCALHOST = 'http://localhost:8080/'
+DEFAULT_COMPARISON_URL = 'http://mnsopenl:9999/web/public/compare/xls'
+GIT_OPENL_VERSION = 1.0
 
 FILE_EXTENSIONS = ['xls', 'xlsx']
 GIT_ATTRIBUTES_DIFFER = ['*.' + file_ext + ' diff=openl' for file_ext in FILE_EXTENSIONS]
@@ -182,9 +182,11 @@ class Installer():
         if os.path.exists(self.openl_settings_path):
             return
         config = configparser.ConfigParser()
+        url_config = DEFAULT_COMPARISON_URL
+        if os.name == 'nt':
+            url_config = ''
         config['DEFAULT'] = {
-            'default_host': DEFAULT_LOCALHOST,
-            'comparison_url': DEFAULT_COMPARISON_URL
+            'comparison_url': url_config
         }
         with open(self.openl_settings_path, 'w') as f:
             config.write(f)
@@ -194,13 +196,30 @@ class Installer():
             os.remove(self.openl_settings_path)
 
 
+HELP_GENERIC = f"""Version: {GIT_OPENL_VERSION}
+git openl <command> [<args>]\n
+Git Openl is a system for managing Excel workbook files in
+association with a Git repository. Git Openl:
+* installs a special git-diff for Excel workbook files\n
+Commands
+--------\n
+* git openl install:
+    Install Git Openl globally.
+* git openl install --local:
+    Install Git Openl locally.
+* git openl uninstall:
+    Uninstall Git Openl.
+* git openl uninstall --local:
+    Uninstall Git Openl locally."""
+
+
 class CommandParser:
 
     def __init__(self, args):
         self.args = args
 
     def help(self, *args):
-        print('Openl git extension. Possible options: install, uninstall, both can be used with --local flag')
+        print(HELP_GENERIC)
 
     def install(self, *args):
         if not args or args[0] == '--global':

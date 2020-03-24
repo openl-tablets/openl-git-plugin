@@ -1,1 +1,17 @@
-Thank you for installing Openl Git plugin
+Thank you for installing Openl Git plugin.
+Installation order
+
+If you want, to install it globally,please enter
+git openl install
+
+Alternatively, initialise Git Openl locally (per repository), using the --local option, inside the root folder of your repository local working copy:
+git openl install --local
+
+After installing depending on mode (global,local) there is created file called git-openl.config in the same folder as .gitconfig file
+
+E.g, in windows 10 with global option it will be:
+C:\Users\<username>\git-openl.config
+If local mode was chosen:
+../<project folder>/.git/git-openl.config
+
+If you want to change the Webstudio url, you can customize it by editing the git-openl.config file and setting the comparison_url parameter.

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Openl Git Plugin"
-#define MyAppVersion "0.1"
+#define MyAppVersion "1.0"
 #define MyAppPublisher "Openl-Tablets"
 #define MyAppURL "http://openl-tablets.org/"
 
@@ -39,8 +39,8 @@ Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
 [Files]
-Source: "..\git-openl-diff.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\git-openl.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\git-openl-diff.exe"; DestDir: "{app}"; DestName: "git-openl-diff.exe"; Flags: ignoreversion
+Source: "..\git-openl.exe"; DestDir: "{app}";DestName: "git-openl.exe";AfterInstall: InstallGitOpenl; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
@@ -50,6 +50,16 @@ Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; Value
 Root: HKCU; Subkey: "Environment"; ValueType: string; ValueName: "GIT_OPENL_PATH"; ValueData: "{app}"; Check: not IsAdminLoggedOn
 
 [Code]
+var 
+  InputPathToStudioPage: TInputQueryWizardPage;
+
+procedure InitializeWizard;
+begin
+  InputPathToStudioPage := CreateInputQueryPage(wpSelectComponents, 'Webstudio information','Enter the address of the webstudio','Please sepcify the url to webstudio, then click Next. This value can be overriden by git-openl.config later');
+  InputPathToStudioPage.Add('&Webstudio URL:', False);
+  InputPathToStudioPage.Values[0] := 'http://mnsopenl:9999/web/public/compare/xls'; 
+end;
+
 function GetDefaultDirName(Dummy: string): string;
 begin
   if IsAdminLoggedOn then begin
@@ -83,18 +93,9 @@ end;
 
 // Runs the openl initialization.
 procedure InstallGitOpenl();
-var
-  ResultCode: integer;
 begin
-  Exec(
-    ExpandConstant('{cmd}'),
-    ExpandConstant('/C ""{app}\git-openl.exe" install"'),
-    '', SW_HIDE, ewWaitUntilTerminated, ResultCode
-  );
-  if not ResultCode = 1 then
-    MsgBox(
-    'Git Openl was not able to automatically initialize itself. ' +
-    'Please run "git openl install" from the commandline.', mbInformation, MB_OK);
+  RegWriteStringValue(HKEY_CURRENT_USER, 'Environment',
+      'WebstudioPath', ExpandConstant(InputPathToStudioPage.Values[0]));
 end;
 
 // Event function automatically called when uninstalling:

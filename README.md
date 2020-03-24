@@ -29,7 +29,7 @@ C:\Developer>git openl install --local
 
 #### Manual installation of exe files
 Please, take the git-openl and git-openl-diff exe files, put it together to the temporary folder.
-Then add this folder to PATH environment variable.
+Then add this folder to PATH environment variable. Also comparison_url parameter must exists: by adding the variable called WebstudioPath or you need to change the git-openl.config after installation commands.
 Then steps are the same:
 ```
 C:\Developer>git openl install
@@ -54,9 +54,9 @@ This file contains options for the plugin
 
 | Name of property  | Value  | Description  |
 |---|---|---|
-| default_host | http://localhost:8080/  |  Basic url of the application |
-| comparison_url  | webstudio/web/public/compare/xls  |  URL for comparison the excel files |
+| comparison_url  | http://localhost:8080/webstudio/web/public/compare/xls  |  URL for comparison the excel files |
 
+By default this value is empty in Windows in config file, because the path is configured by installer and stored in environment - WebstudioPath in HKLU.
 Local settings are preferable then global
 
 ### Uninstall
