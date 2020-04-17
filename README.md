@@ -10,6 +10,7 @@
 ### Installation
 ### Windows
 You can install the Git Openl client on Windows, using the pre-compiled binary installer.
+Installer is located at generated/windows-64/installer path.
 
 This repository can also be built-from-source using Python and PyInstaller.
 
