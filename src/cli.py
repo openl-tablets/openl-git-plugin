@@ -116,9 +116,14 @@ class Installer():
         # put .gitattributes in same folder as global .gitconfig
         # determine .gitconfig path
         # this requires Git 2.8+ (March 2016)
-        f = self.execute(['--list', '--show-origin'])
-        p = self.execute(['--list'])
+        t = self.execute(['--list', '--show-origin'])
+        if not t:
+            self.execute(['diff.openl.command', 'template'])
+            f = self.execute(['--list', '--show-origin'])
+        else:
+            f = t
 
+        p = self.execute(['--list'])
         f = f.split('\n')[0]
         p = p.split('\n')[0]
 
