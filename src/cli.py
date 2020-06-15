@@ -77,6 +77,9 @@ class Installer():
                 # set core.attributesfile
                 self.execute(['core.attributesfile', self.git_attributes_path])
 
+            #5. no page
+            self.execute(['core.pager','cat'])
+
             print(colored('Installation has been successfully completed', color='green'))
         except Exception as e:
             print(colored('Something went wrong, reason:', color='red'))

@@ -6,6 +6,7 @@ import webbrowser
 import re
 
 import requests
+import colorama
 from termcolor import colored
 
 OPENL_GIT_SETTINGS_FILE = 'git-openl.config'
@@ -53,6 +54,7 @@ def get_config_dir(path):
 
 
 if __name__ == "__main__":
+    colorama.init()
     workbook_name = ''
     rename_from = rename_to = None
     if not 8 <= len(sys.argv) <= 10:
