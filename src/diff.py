@@ -3,6 +3,7 @@ import os
 import subprocess
 import sys
 import webbrowser
+import re
 
 import requests
 from termcolor import colored
@@ -53,15 +54,21 @@ def get_config_dir(path):
 
 if __name__ == "__main__":
     workbook_name = ''
-    if not 8 <= len(sys.argv) <= 9:
+    rename_from = rename_to = None
+    if not 8 <= len(sys.argv) <= 10:
         print(colored('Unexpected number of arguments', color='red'))
         sys.exit(0)
     if len(sys.argv) == 8:
         _, workbook_name, workbook_b, _, _, workbook_a, _, _ = sys.argv
-        numlines = 3
     if len(sys.argv) == 9:
-        _, numlines, workbook_name, workbook_b, _, _, workbook_a, _, _ = sys.argv
-        numlines = int(numlines)
+        _, _, workbook_name, workbook_b, _, _, workbook_a, _, _ = sys.argv
+    if len(sys.argv) == 10:
+        _, workbook_name, workbook_b, _, _, workbook_a, _, _, _, message = sys.argv
+        if message is not None:
+            match = re.search('(rename from.*)\n(rename to.*)\n', message)
+            if match:
+                rename_from = match.group(1)
+                rename_to = match.group(2)
     print(f'diff in progress for {workbook_name}')
     config = configparser.ConfigParser()
     config_dir = get_config_dir(os.getcwd())
@@ -80,6 +87,9 @@ if __name__ == "__main__":
         files = {'file1': file_before, 'file2': file_after}
         response = requests.post(post_url, files=files, data={'fileName': workbook_name})
         webbrowser.open(response.url, new=2)
+        if rename_from is not None:
+            print(colored(rename_from, color='white'))
+            print(colored(rename_to, color='white'))
         print(colored('Comparison page in browser was opened for: ', color='white'))
         print(colored('a/' + workbook_name, color='white')) if file_after is not None else print(
             colored('a/file was not presented: ' + workbook_name, color='white'))
