@@ -69,6 +69,9 @@ if __name__ == "__main__":
             if match:
                 rename_from = match.group(1)
                 rename_to = match.group(2)
+    if re.search('\~\$', workbook_name):
+        print(f'temporary file {workbook_name} was ignored')
+        sys.exit(0)
     print(f'diff in progress for {workbook_name}')
     config = configparser.ConfigParser()
     config_dir = get_config_dir(os.getcwd())
